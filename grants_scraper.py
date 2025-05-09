@@ -1,29 +1,36 @@
-# grants_scraper.py
 import requests
 import csv
 from datetime import datetime, timedelta
 
-# Grants.gov API endpoint
+# Grants.gov Search endpoint (POST)
 endpoint = "https://www.grants.gov/grantsws/rest/opportunities/search"
 
-# Get yesterday's date (or today)
+# Get yesterday's date
 today = datetime.utcnow().date()
 yesterday = today - timedelta(days=1)
 
-params = {
+# Search payload — use POST instead of GET
+payload = {
     "startRecordNum": 0,
-    "oppStatuses": "forecasted,posted",  # You can change this
-    "modifiedFromDate": str(yesterday),  # Get modified grants since yesterday
+    "oppStatuses": ["forecasted", "posted"],
+    "modifiedFromDate": str(yesterday),
     "modifiedToDate": str(today),
-    "rows": 100,
+    "rows": 100
 }
 
-response = requests.get(endpoint, params=params)
-data = response.json()
+headers = {
+    "Content-Type": "application/json"
+}
 
+response = requests.post(endpoint, json=payload, headers=headers)
+
+# Check the response
+if response.status_code != 200:
+    raise Exception(f"Failed to fetch data: {response.status_code} {response.text}")
+
+data = response.json()
 opportunities = data.get("oppHits", [])
 
-# Save to CSV
 filename = f"grants_{today}.csv"
 with open(filename, "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
