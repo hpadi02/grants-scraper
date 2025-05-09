@@ -11,7 +11,9 @@ print("Downloading and parsing RSS feed...")
 feed = feedparser.parse(rss_url)
 
 if feed.bozo:
-    raise Exception(f"Failed to parse RSS feed: {feed.bozo_exception}")
+    print(f"Warning: RSS parsing error: {feed.bozo_exception}")
+    if not feed.entries:
+        raise Exception("No valid entries could be parsed from the RSS feed.")
 
 print(f"Found {len(feed.entries)} grant opportunities.")
 
