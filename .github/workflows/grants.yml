@@ -26,8 +26,8 @@ jobs:
       run: |
         python grants_scraper.py
 
-    - name: Upload CSV Output
-      uses: actions/upload-artifact@v3
-      with:
-        name: grants-output
-        path: grants_*.csv
+        - name: Upload CSV Output
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: grants-output
+          path: grants_*.csv
