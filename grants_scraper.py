@@ -14,7 +14,7 @@ if response.status_code != 200:
 
 # Parse the XML content
 print("Parsing RSS feed...")
-root = ET.fromstring(response.content)
+root = ET.fromstring(response.content.decode("utf-8"))
 
 items = root.findall(".//item")
 print(f"Found {len(items)} grant opportunities.")
