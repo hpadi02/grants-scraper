@@ -12,6 +12,10 @@ response = requests.get(rss_url)
 if response.status_code != 200:
     raise Exception(f"Failed to download RSS feed: {response.status_code} {response.text}")
 
+# Write raw RSS response to a debug file
+with open("rss_debug.xml", "w", encoding="utf-8") as debug_file:
+    debug_file.write(response.content.decode("utf-8", errors="replace"))
+
 # Parse the XML content
 print("Parsing RSS feed...")
 root = ET.fromstring(response.content.decode("utf-8"))
