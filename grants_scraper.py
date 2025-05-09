@@ -9,7 +9,10 @@ zip_url = "https://www.grants.gov/download/opportunities/GrantsDBExtract.zip"
 
 # Download the ZIP file
 print("Downloading grants ZIP archive...")
-response = requests.get(zip_url)
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+}
+response = requests.get(zip_url, headers=headers)
 if response.status_code != 200:
     raise Exception(f"Failed to download ZIP file: {response.status_code} {response.text}")
 
