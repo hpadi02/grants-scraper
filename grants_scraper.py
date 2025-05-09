@@ -2,33 +2,33 @@ import requests
 import csv
 from datetime import datetime, timedelta
 
-# Grants.gov Search endpoint (POST)
+# Grants.gov Search endpoint (GET)
 endpoint = "https://www.grants.gov/grantsws/rest/opportunities/search"
 
 # Get yesterday's date
 today = datetime.utcnow().date()
 yesterday = today - timedelta(days=1)
 
-# Search payload — use POST instead of GET
-payload = {
+# Query parameters
+params = {
     "startRecordNum": 0,
-    "oppStatuses": ["forecasted", "posted"],
+    "oppStatuses": "forecasted,posted",
     "modifiedFromDate": str(yesterday),
     "modifiedToDate": str(today),
     "rows": 100
 }
 
-headers = {
-    "Content-Type": "application/json"
-}
-
-response = requests.post(endpoint, json=payload, headers=headers)
+response = requests.get(endpoint, params=params)
 
 # Check the response
 if response.status_code != 200:
     raise Exception(f"Failed to fetch data: {response.status_code} {response.text}")
 
-data = response.json()
+try:
+    data = response.json()
+except ValueError:
+    raise Exception(f"Response was not valid JSON: {response.text}")
+
 opportunities = data.get("oppHits", [])
 
 filename = f"grants_{today}.csv"
